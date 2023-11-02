@@ -3,6 +3,7 @@ package com.example.todolist.adapter
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,6 +41,12 @@ class TodoAdapter(
             intent.putExtra("title", item.title.toString())
             intent.putExtra("author", item.author.toString())
             intent.putExtra("pages", item.pages.toString())
+            activity.startActivityForResult(intent,1)
+        }
+        val bookLink = holder.mainLayout.findViewById<TextView>(R.id.book_link)
+        bookLink.setOnClickListener {
+            val websiteUrl = item.book_link
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(websiteUrl))
             activity.startActivityForResult(intent,1)
         }
     }

@@ -45,8 +45,8 @@ class TodoAdapter(
         }
         val bookLink = holder.mainLayout.findViewById<TextView>(R.id.book_link)
         bookLink.setOnClickListener {
-            val websiteUrl = item.book_link
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(websiteUrl))
+            val bookUrl = item.book_link
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(bookUrl))
             activity.startActivityForResult(intent,1)
         }
     }

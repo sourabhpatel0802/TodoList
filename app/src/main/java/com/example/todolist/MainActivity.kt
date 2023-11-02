@@ -3,28 +3,45 @@ package com.example.todolist
 import MyDatabaseHelper
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
 import com.example.todolist.adapter.CustomAdapter
+import com.example.todolist.adapter.TodoAdapter
+import com.example.todolist.database.TodoDatabase
+import com.example.todolist.database.TodoRepository
+import com.example.todolist.model.TodoItem
+import com.example.todolist.viewModel.TodoViewModel
+import com.example.todolist.viewModel.TodoViewModelFactory
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Dispatchers.IO
         setContentView(R.layout.activity_main)
         val addButton = findViewById<ImageView>(R.id.add_button)
         addButton.setOnClickListener{
             val intent = Intent(this,AddActivity::class.java)
             startActivity(intent)
         }
-        val myDb = MyDatabaseHelper(this)
+        val database = TodoDatabase.getDatabase(this)
+        val repository = TodoRepository(database.todoItemDao())
+        val todoViewModel = ViewModelProvider(this, TodoViewModelFactory(repository)).get(
+            TodoViewModel::class.java)
+        val list = ArrayList<TodoItem>()
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
-        val list:ArrayList<ArrayList<String>> = storeDataInArrays(myDb)
-        val customAdapter = CustomAdapter(this,this,list[0],list[1],list[2],list[3])
-        recyclerView.adapter = customAdapter
+        val todoAdapter = TodoAdapter(this,this,list)
+        recyclerView.adapter = todoAdapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
@@ -38,19 +55,23 @@ class MainActivity : AppCompatActivity() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
-                val id = customAdapter.getIdByPosition(position);
-                myDb.deleteItemFromDatabase(id)
-                customAdapter.removeAtPosition(position)
+                val id = todoAdapter.getIdByPosition(position);
+                todoViewModel.deleteTodoById(id.toLong())
+                todoAdapter.removeAtPosition(position)
             }
         }
 
         val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
         itemTouchHelper.attachToRecyclerView(recyclerView)
+
+        todoViewModel.allTodoItem.observe(this, { todoItems ->
+            list.clear()
+            list.addAll(todoItems)
+            recyclerView.adapter?.notifyDataSetChanged()
+        })
+
     }
 
-    private fun storeDataInArrays(myDb:MyDatabaseHelper):ArrayList<ArrayList<String>> {
-        return myDb.readAllData()
-    }
 
 
 }

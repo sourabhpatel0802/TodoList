@@ -7,6 +7,12 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import androidx.lifecycle.ViewModelProvider
+import com.example.todolist.database.TodoDatabase
+import com.example.todolist.database.TodoRepository
+import com.example.todolist.model.TodoItem
+import com.example.todolist.viewModel.TodoViewModel
+import com.example.todolist.viewModel.TodoViewModelFactory
 
 class UpdateActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,10 +24,13 @@ class UpdateActivity : AppCompatActivity() {
             val title = findViewById<EditText>(R.id.title_input).text.toString()
             val author = findViewById<EditText>(R.id.author_input).text.toString()
             val pages = findViewById<EditText>(R.id.pages_input).text.toString()
+            val book_link = findViewById<EditText>(R.id.book_link_input).text.toString()
             val id = getIntent().getStringExtra("id").toString()
-            val myDb = MyDatabaseHelper(this)
-            Log.d("test data is","${title}")
-            myDb.updateBook(title,author,pages,id)
+            val database = TodoDatabase.getDatabase(this)
+            val repository = TodoRepository(database.todoItemDao())
+            val todoViewModel = ViewModelProvider(this,TodoViewModelFactory(repository)).get(TodoViewModel::class.java)
+            val todo = TodoItem(id.toLong(),title,author,pages,book_link)
+            todoViewModel.update(todo)
             val intent = Intent(this,MainActivity::class.java)
             startActivity(intent)
         }

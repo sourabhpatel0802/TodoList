@@ -41,6 +41,7 @@ class UpdateActivity : AppCompatActivity() {
         findViewById<EditText>(R.id.title_input).setText(getIntent().getStringExtra("title"))
         findViewById<EditText>(R.id.author_input).setText(getIntent().getStringExtra("author").toString())
         findViewById<EditText>(R.id.pages_input).setText(getIntent().getStringExtra("pages").toString())
+        findViewById<EditText>(R.id.book_link_input).setText(getIntent().getStringExtra("book_link").toString())
 
     }
 

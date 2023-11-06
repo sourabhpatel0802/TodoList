@@ -55,7 +55,7 @@ class MigrationTest {
         )
 
 
-        val todoItems: LiveData<List<TodoItem>> = db.todoItemDao().getAllTodoItems() // Replace with your DAO query function
+        val todoItems: LiveData<List<TodoItem>> = db.todoItemDao().getAllTodoItems()
 
         todoItems.observeForever { todoItems ->
             if (todoItems?.isNotEmpty() == true) {

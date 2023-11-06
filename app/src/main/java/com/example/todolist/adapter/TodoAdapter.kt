@@ -41,6 +41,7 @@ class TodoAdapter(
             intent.putExtra("title", item.title.toString())
             intent.putExtra("author", item.author.toString())
             intent.putExtra("pages", item.pages.toString())
+            intent.putExtra("book_link", item.book_link.toString())
             activity.startActivityForResult(intent,1)
         }
         val bookLink = holder.mainLayout.findViewById<TextView>(R.id.book_link)

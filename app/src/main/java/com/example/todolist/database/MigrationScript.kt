@@ -25,5 +25,26 @@ class MigrationScript {
                 database.execSQL("ALTER TABLE `todo_items_new` RENAME TO `todo_items`")
             }
         }
+        val MIGRATION_2_3: Migration = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("CREATE TABLE IF NOT EXISTS `todo_items_new` " +
+                        "(`_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                        "`title` TEXT NOT NULL, " +
+                        "`author` TEXT NOT NULL, " +
+                        "`pages` TEXT NOT NULL, " +
+                        "`book_link` TEXT NOT NULL," +
+                        "`isbn` TEXT NOT NULL)")
+
+                // Copy the data from the old table to the new table
+                database.execSQL("INSERT INTO `todo_items_new` (`_id`, `title`, `author`, `pages`, `book_link`,`isbn`) " +
+                        "SELECT `_id`, `title`, `author`, `pages`, `book_link`,'' FROM `todo_items`")
+
+                // Drop the old table
+                database.execSQL("DROP TABLE `todo_items`")
+
+                // Rename the new table to the original table name
+                database.execSQL("ALTER TABLE `todo_items_new` RENAME TO `todo_items`")
+            }
+        }
     }
 }

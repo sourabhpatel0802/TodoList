@@ -10,6 +10,7 @@ data class TodoItem(
     @ColumnInfo(name = "title")val title: String,
     @ColumnInfo(name = "author")val author: String,
     @ColumnInfo(name = "pages")val pages: String,
-    @ColumnInfo(name = "book_link")val book_link: String
+    @ColumnInfo(name = "book_link")val book_link: String,
+    @ColumnInfo(name = "isbn")val isbn: String
 )
 

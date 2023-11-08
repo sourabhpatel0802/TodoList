@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,12 +15,17 @@ import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todolist.R
 import com.example.todolist.UpdateActivity
+import com.example.todolist.database.TodoRepository
+import com.example.todolist.model.Cover
 import com.example.todolist.model.TodoItem
+import com.example.todolist.retrofit.RetrofitClient
+import com.example.todolist.viewModel.TodoViewModel
 
 class TodoAdapter(
     private val activity: Activity,
     private val context: Context,
-    private val todoList: List<TodoItem>
+    private val todoList: List<TodoItem>,
+    private var todoViewModel: TodoViewModel
 ):
     RecyclerView.Adapter<TodoAdapter.TodoViewHolder>(){
 
@@ -45,10 +51,14 @@ class TodoAdapter(
             activity.startActivityForResult(intent,1)
         }
         val bookLink = holder.mainLayout.findViewById<TextView>(R.id.book_link)
+
         bookLink.setOnClickListener {
-            val bookUrl = item.book_link
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(bookUrl))
-            activity.startActivityForResult(intent,1)
+            todoViewModel.getcoverByIsbn(item.isbn.toInt())
+            todoViewModel?.cover?.observeForever { cover ->
+                Log.d("my bok cover url is ","url-> ${cover.source_url}")
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(cover.source_url))
+                activity.startActivityForResult(intent,1)
+            }
         }
     }
 

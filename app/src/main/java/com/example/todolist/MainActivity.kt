@@ -18,6 +18,7 @@ import com.example.todolist.adapter.CustomAdapter
 import com.example.todolist.adapter.TodoAdapter
 import com.example.todolist.database.TodoDatabase
 import com.example.todolist.database.TodoRepository
+import com.example.todolist.model.Cover
 import com.example.todolist.model.TodoItem
 import com.example.todolist.viewModel.TodoViewModel
 import com.example.todolist.viewModel.TodoViewModelFactory
@@ -40,8 +41,9 @@ class MainActivity : AppCompatActivity() {
         val todoViewModel = ViewModelProvider(this, TodoViewModelFactory(repository)).get(
             TodoViewModel::class.java)
         val list = ArrayList<TodoItem>()
+
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
-        val todoAdapter = TodoAdapter(this,this,list)
+        val todoAdapter = TodoAdapter(this,this,list,todoViewModel)
         recyclerView.adapter = todoAdapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 

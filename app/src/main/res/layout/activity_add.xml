@@ -55,6 +55,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pages_input" />
 
+    <EditText
+        android:id="@+id/isbn_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:hint="Book isbn"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/book_link_input" />
+
     <Button
         android:id="@+id/add_button"
         android:layout_width="match_parent"
@@ -65,5 +77,5 @@
         android:textAllCaps="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/book_link_input" />
+        app:layout_constraintTop_toBottomOf="@+id/isbn_input" />
 </androidx.constraintlayout.widget.ConstraintLayout>

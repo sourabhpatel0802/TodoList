@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.example.todolist.dao.TodoItemDao
 import com.example.todolist.model.TodoItem
 
-@Database(entities = [TodoItem::class], version = 2, exportSchema = false)
+@Database(entities = [TodoItem::class], version = 3, exportSchema = false)
 abstract class TodoDatabase : RoomDatabase() {
     abstract fun todoItemDao(): TodoItemDao
 
@@ -23,7 +23,7 @@ abstract class TodoDatabase : RoomDatabase() {
                     TodoDatabase::class.java,
                     "todo_database"
                 )
-                    .addMigrations(MigrationScript.MIGRATION_1_2)
+                    .addMigrations(MigrationScript.MIGRATION_1_2,MigrationScript.MIGRATION_2_3)
                     .build()
                 INSTANCE = instance
                 // return instance

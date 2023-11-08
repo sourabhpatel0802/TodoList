@@ -28,7 +28,7 @@ class MigrationTest {
         FrameworkSQLiteOpenHelperFactory()
     )
     @Test
-    fun testMigrations() {
+    fun testMigrations_1_2() {
         val db = Room.databaseBuilder(
             InstrumentationRegistry.getInstrumentation().targetContext,
             TodoDatabase::class.java,
@@ -40,7 +40,8 @@ class MigrationTest {
             title = "java",
             author = "vishnu",
             pages = "155",
-            book_link = "https://www.facebook.com/"
+            book_link = "https://www.facebook.com/",
+            isbn = "null"
         )
 
         runBlocking {
@@ -67,5 +68,46 @@ class MigrationTest {
             }
         }
 
+    }
+    @Test
+    fun testMigration_2_3()  {
+        val db = Room.databaseBuilder(
+            InstrumentationRegistry.getInstrumentation().targetContext,
+            TodoDatabase::class.java,
+            "my_todo_database3"
+        ).addMigrations(MigrationScript.MIGRATION_2_3)
+            .build()
+
+        val todoItem = TodoItem(
+            title = "java",
+            author = "vishnu",
+            pages = "155",
+            book_link = "https://www.facebook.com/",
+            isbn = "0385472579"
+        )
+
+        runBlocking {
+            db.todoItemDao().insert(todoItem)
+        }
+
+        migrationTestHelper.runMigrationsAndValidate(
+            "my_todo_database3",
+            3,
+            true,
+            MigrationScript.MIGRATION_2_3
+        )
+
+
+        val todoItems: LiveData<List<TodoItem>> = db.todoItemDao().getAllTodoItems()
+
+        todoItems.observeForever { todoItems ->
+            if (todoItems?.isNotEmpty() == true) {
+                val retrievedTodoItem = todoItems[0]
+                val isbn = retrievedTodoItem.isbn
+                assertEquals("0385472579", isbn)
+            } else {
+                fail("No data found in the migrated table")
+            }
+        }
     }
 }

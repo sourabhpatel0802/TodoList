@@ -25,11 +25,12 @@ class UpdateActivity : AppCompatActivity() {
             val author = findViewById<EditText>(R.id.author_input).text.toString()
             val pages = findViewById<EditText>(R.id.pages_input).text.toString()
             val book_link = findViewById<EditText>(R.id.book_link_input).text.toString()
+            val isbn = findViewById<EditText>(R.id.isbn_input).text.toString()
             val id = getIntent().getStringExtra("id").toString()
             val database = TodoDatabase.getDatabase(this)
             val repository = TodoRepository(database.todoItemDao())
             val todoViewModel = ViewModelProvider(this,TodoViewModelFactory(repository)).get(TodoViewModel::class.java)
-            val todo = TodoItem(id.toLong(),title,author,pages,book_link)
+            val todo = TodoItem(id.toLong(),title,author,pages,book_link,isbn)
             todoViewModel.update(todo)
             val intent = Intent(this,MainActivity::class.java)
             startActivity(intent)
@@ -42,7 +43,7 @@ class UpdateActivity : AppCompatActivity() {
         findViewById<EditText>(R.id.author_input).setText(getIntent().getStringExtra("author").toString())
         findViewById<EditText>(R.id.pages_input).setText(getIntent().getStringExtra("pages").toString())
         findViewById<EditText>(R.id.book_link_input).setText(getIntent().getStringExtra("book_link").toString())
-
+        findViewById<EditText>(R.id.isbn_input).setText(getIntent().getStringExtra("isbn").toString())
     }
 
 }

@@ -4,11 +4,13 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.todolist.dao.TodoItemDao
 import com.example.todolist.model.TodoItem
+import com.example.todolist.retrofit.RetrofitClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class TodoRepository(private val todoItemDao: TodoItemDao) {
     val allTodoItem: LiveData<List<TodoItem>> = todoItemDao.getAllTodoItems()
+    suspend fun getCoverByIsbn(isbn: Int) = RetrofitClient.instance.getCoverByIsbn(isbn)
     suspend fun insert(todoItem: TodoItem) {
         withContext(Dispatchers.IO){
             todoItemDao.insert(todoItem)
